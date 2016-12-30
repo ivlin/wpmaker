@@ -84,26 +84,29 @@ public class WPMaker{
 
     /*
       Some transformation on the array of pixels
+      if isNegative is true: brights are turned transparent, darks become dark
+      if isNegative is false: brights are turned black, darks become transparent
      */
-    public void transform(boolean isNegative){
+    public void transform(float contrast, boolean isNegative){
 	Color cur;
 	for (int r = 0; r<height; r++){
 	    for (int c=0; c<width; c++){
 		cur = pixelArray[r][c];
-		if ((cur.getRed()+cur.getGreen()+cur.getBlue())/3 >= 128){
+		//if ((cur.getRed()+cur.getGreen()+cur.getBlue())/3 >= 128){
+		if ((cur.getRed()+cur.getGreen()+cur.getBlue())/3 >= 255*contrast){
 		    if (isNegative){
-			pixelArray[r][c] = new Color(255,255,255,0);
+			pixelArray[r][c] = new Color(0,0,0,255);
 		    }
 		    else{
-			pixelArray[r][c] = new Color(0,0,0,255);
+			pixelArray[r][c] = new Color(255,255,255,0);
 		    }
 		}
 		else{
 		    if (isNegative){
-			pixelArray[r][c] = new Color(0,0,0,255);
+			pixelArray[r][c] = new Color(255,255,255,0);
 		    }
 		    else{
-			pixelArray[r][c] = new Color(255,255,255,0);
+			pixelArray[r][c] = new Color(0,0,0,255);
 		    }
 		}
 	    }
@@ -139,7 +142,7 @@ public class WPMaker{
 	}catch(IOException e){
 	}
     }
-    
+    /*
     public static void main(String[] args){
 	WPMaker test = new WPMaker();
 	//Loads the image at url
@@ -147,8 +150,14 @@ public class WPMaker{
 	//Loads the pixel color array
 	test.loadPixelData();
 	//Applies the transformation to the image
-	test.transform();
+	if (args[2].equals("-p")){
+	    test.transform(false);    
+	}
+	else{
+	    test.transform(true);
+	}
 	//Saves the stored image
-	test.saveFile(args[1],1600,1000,new Color(0x3D,0x99,0x70));
+	test.saveFile(args[1],1600,1000,new Color(0xF3,0x76,0xA8));
     }
+    */
 }
