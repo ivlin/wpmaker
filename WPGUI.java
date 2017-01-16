@@ -4,9 +4,9 @@ import java.awt.event.*;
 
 public class WPGUI extends JFrame implements ActionListener{
     private Container pane;
-    private JTextField width,height,input,output,level,red,green,blue;
+    private JTextField width,height,input,output,level,red,green,blue,caption;
     private JButton create;
-    private JLabel labelWidth,labelHeight,labelInput,labelOutput,status,labelLevel,labelRed,labelGreen,labelBlue;
+    private JLabel labelWidth,labelHeight,labelInput,labelOutput,status,labelLevel,labelRed,labelGreen,labelBlue,labelCaption;
     private JCheckBox isNegative;
     
     public WPGUI(){
@@ -52,6 +52,9 @@ public class WPGUI extends JFrame implements ActionListener{
 	labelBlue= new JLabel("B");
 	blue = new JTextField(10);
 	
+	labelCaption = new JLabel("Caption:");
+	caption = new JTextField(10);
+
 	create = new JButton("create");
 	create.setActionCommand("wpmaker");
 	create.addActionListener(this);
@@ -75,6 +78,8 @@ public class WPGUI extends JFrame implements ActionListener{
 	pane.add(green);
 	pane.add(labelBlue);
 	pane.add(blue);
+	pane.add(labelCaption);
+	pane.add(caption);
 	pane.add(create);
 	pane.add(status);
     }
@@ -90,7 +95,13 @@ public class WPGUI extends JFrame implements ActionListener{
 	    //Applies the transformation to the image
 	    test.transform(Float.parseFloat(level.getText()),isNegative.isSelected());    
 	    //Saves the stored image
-	    test.saveFile(output.getText(),Integer.parseInt(width.getText()),Integer.parseInt(height.getText()),new Color(Integer.parseInt(red.getText()),Integer.parseInt(green.getText()),Integer.parseInt(blue.getText())));
+	    test.saveFile(output.getText(),
+			  Integer.parseInt(width.getText()),
+			  Integer.parseInt(height.getText()),
+			  new Color(Integer.parseInt(red.getText()),
+				    Integer.parseInt(green.getText()),
+				    Integer.parseInt(blue.getText())),
+			  caption.getText());
 	    status.setText(output.getText()+" created");
 	}
     }

@@ -1,6 +1,9 @@
 import java.io.*;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.FontMetrics;
+import java.awt.Font;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
@@ -92,7 +95,6 @@ public class WPMaker{
 	for (int r = 0; r<height; r++){
 	    for (int c=0; c<width; c++){
 		cur = pixelArray[r][c];
-		//if ((cur.getRed()+cur.getGreen()+cur.getBlue())/3 >= 128){
 		if ((cur.getRed()+cur.getGreen()+cur.getBlue())/3 >= 255*contrast){
 		    if (isNegative){
 			pixelArray[r][c] = new Color(0,0,0,255);
@@ -124,7 +126,7 @@ public class WPMaker{
 		bg.setRGB(c,r,color.getRGB());
 	    }
 	}
-	Graphics g = bg.getGraphics();
+	Graphics g = bg.createGraphics();
 	g.drawImage(image,(width-image.getWidth())/2,(height-image.getHeight())/2,null);
 	return bg;
     }
@@ -132,16 +134,29 @@ public class WPMaker{
     /*
       Saves a bufferedimage as url
      */    
-    public void saveFile(String url, int wpwidth, int wpheight, Color c){
+    public void saveFile(String url, int wpwidth, int wpheight, Color c, String caption){
 	try{
 	    BufferedImage newImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 	    updatePixelData(newImage);
 	    BufferedImage bg = loadBackground(wpwidth,wpheight,c,newImage);
+	    caption(bg,caption,"sans-serif",64);
 	    String extension = url.substring(url.lastIndexOf('.')+1,url.length());
 	    ImageIO.write(bg, extension, new File(url));
 	}catch(IOException e){
 	}
     }
+
+    public void caption(BufferedImage bg, String caption, String fontFamily, int fontSize){
+	Graphics2D g = bg.createGraphics();
+	g.setColor(new Color(0,0,0));
+	Font captionFont = new Font(fontFamily, Font.BOLD, fontSize);
+	FontMetrics metrics = g.getFontMetrics(captionFont);
+	g.setFont(captionFont);	
+	g.drawString(caption, 
+		     (bg.getWidth()-metrics.stringWidth(caption))/2, 
+		     (bg.getHeight()+image.getHeight())/2+metrics.getHeight());
+    }
+
     /*
     public static void main(String[] args){
 	WPMaker test = new WPMaker();
@@ -150,14 +165,9 @@ public class WPMaker{
 	//Loads the pixel color array
 	test.loadPixelData();
 	//Applies the transformation to the image
-	if (args[2].equals("-p")){
-	    test.transform(false);    
-	}
-	else{
-	    test.transform(true);
-	}
+	test.transform((float)0.5,false);
 	//Saves the stored image
-	test.saveFile(args[1],1600,1000,new Color(0xF3,0x76,0xA8));
+	test.saveFile("out.png",2000,1200,new Color(240,220,100),"Hello, \n World");
     }
     */
 }
